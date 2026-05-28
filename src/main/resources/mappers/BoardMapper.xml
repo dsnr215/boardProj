@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="ddit.example.board.mapper.BoardMapper">
+
+	<!-- 목록 -->
+    <select id="selectBoardList" resultType="boardVO">
+        SELECT BRD_NO, TITLE, CONTENT, WRITER_ID, REG_DATE
+        FROM MEMBER_BOARD
+        ORDER BY BRD_NO DESC
+    </select>
+
+    <!-- 상세 -->
+    <select id="selectBoardDetail" parameterType="int" resultType="boardVO">
+        SELECT BRD_NO, TITLE, CONTENT, WRITER_ID, REG_DATE
+        FROM MEMBER_BOARD
+        WHERE BRD_NO = #{brdNo}
+    </select>
+
+    <!-- 등록 -->
+    <!--
+	 selectKey : keyProperty로 VO에 brdNo 저장 - insert 후 detail 이동 시 
+	 NVL(MAX(BOOK_ID),0)+1 : 시퀀스 없는 경우 - 테이블 현제 최대값 +1(NVL로 0처리)
+	 SEQ_MEMBER_BOARD.NEXTVAL : 시퀀스 있는 경우 - 오라클 시퀀스가 번호 관리
+	-->
+	<!-- insert 후 detail  -->
+    <insert id="insertBoard" parameterType="boardVO">
+	    <selectKey resultType="int" order="BEFORE" keyProperty="brdNo">
+	        SELECT SEQ_MEMBER_BOARD.NEXTVAL FROM DUAL
+	    </selectKey>
+	    INSERT INTO MEMBER_BOARD (BRD_NO, TITLE, CONTENT, WRITER_ID)
+	    VALUES (#{brdNo}, #{title}, #{content}, #{writerId})
+	</insert>
+	
+	<!-- insert 후 list -->
+	<!--
+	<insert id="insertBoard" parameterType="BoardVO">
+	    INSERT INTO MEMBER_BOARD (BRD_NO, TITLE, CONTENT, WRITER_ID)
+	    VALUES (SEQ_MEMBER_BOARD.NEXTVAL, #{title}, #{content}, #{writerId})
+	</insert>
+	-->
+
+    <!-- 수정 -->
+    <update id="updateBoard" parameterType="boardVO">
+        UPDATE MEMBER_BOARD
+        SET TITLE = #{title},
+            CONTENT = #{content}
+        WHERE BRD_NO = #{brdNo}
+    </update>
+
+    <!-- 삭제 -->
+    <delete id="deleteBoard" parameterType="int">
+        DELETE FROM MEMBER_BOARD
+        WHERE BRD_NO = #{brdNo}
+    </delete>
+    
+</mapper>
