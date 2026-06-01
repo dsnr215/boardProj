@@ -21,6 +21,7 @@ import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 
+import ddit.example.board.service.Impl.UserDetailsServiceImpl;
 import jakarta.servlet.DispatcherType;
 
 //@formatter:off
